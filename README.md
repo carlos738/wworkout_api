@@ -152,7 +152,7 @@ else:
     ##tablea do banco de dados gerado
 
 ##observação como não conseguir gerar o banco de dados pelo 
-## cereate-migrationas utilizaei o banco de dados da profesora Nayana como exemplo
+## create-migrationas utilizaei o banco de dados da profesora Nayana como exemplo
 ## de uma criação de tabelas após o comando create migrations
 
 
@@ -402,8 +402,8 @@ from workout_api.contrib.schemas import BaseSchema, OutMixin
 
 
 class Atleta(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do atleta', examples='Joann', max_length=50)]
-    cpf: Annotated[str, Field(description='CPF do atleta', examples='98768432100', max_length=11)]
+    nome: Annotated[str, Field(description='Nome do atleta', examples='Julia', max_length=50)]
+    cpf: Annotated[str, Field(description='CPF do atleta', examples='09876543211', max_length=11)]
     idade: Annotated[int, Field(description='Idade do atleta', examples=27)]
     peso: Annotated[PositiveFloat, Field(description='Peso do atleta', examples=79.5)]
     altura: Annotated[PositiveFloat, Field(description='Altura do atleta', examples=1.80)]
@@ -420,8 +420,8 @@ class AtletaOut(Atleta, OutMixin):
     pass
 
 class AtletaUpdate(BaseSchema):
-    nome: Annotated[Optional[str], Field(None, description='Nome do atleta', example='Joao', max_length=50)]
-    idade: Annotated[Optional[int], Field(None, description='Idade do atleta', example=25)]
+    nome: Annotated[Optional[str], Field(None, description='Nome do atleta', examples='julia', max_length=50)]
+    idade: Annotated[Optional[int], Field(None, description='Idade do atleta', examples=28)]
 
 #######
 #PASTA GATEGORIAS
@@ -594,13 +594,13 @@ from workout_api.contrib.schemas import BaseSchema
 
 
 class CentroTreinamentoIn(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
-    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua X, Q02', max_length=60)]
-    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Marcos', max_length=30)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Master Dragon', max_length=23)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua Q11, 009', max_length=57)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Nicolas', max_length=31)]
 
 
 class CentroTreinamentoAtleta(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Master Dragon', max_length=23)]
 
 
 class CentroTreinamentoOut(CentroTreinamentoIn):
@@ -614,13 +614,13 @@ from workout_api.contrib.schemas import BaseSchema
 
 
 class CentroTreinamentoIn(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
-    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua X, Q02', max_length=60)]
-    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Marcos', max_length=30)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Master Dragon', max_length=23)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua Q11,009', max_length=57)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Nicolas', max_length=31)]
 
 
 class CentroTreinamentoAtleta(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Master King', max_length=23)]
 
 
 class CentroTreinamentoOut(CentroTreinamentoIn):
@@ -687,13 +687,13 @@ from workout_api.contrib.schemas import BaseSchema
 
 
 class CentroTreinamentoIn(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Lyon King', max_length=20)]
-    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua D, 33', max_length=60)]
-    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Carlos', max_length=30)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Master King', max_length=23)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua Q11 , 009', max_length=57)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Carlos', max_length=31)]
 
 
 class CentroTreinamentoAtleta(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT  Lyon King', max_length=20)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT  Master Dragon', max_length=21)]
 
 
 class CentroTreinamentoOut(CentroTreinamentoIn):
@@ -711,13 +711,13 @@ from workout_api.contrib.schemas import BaseSchema
 
 
 class CentroTreinamentoIn(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Lyon King', max_length=20)]
-    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua D, 33', max_length=60)]
-    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Carlos', max_length=30)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Master Dragon', max_length=21)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua Q11, 009', max_length=57)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Nicolas', max_length=31)]
 
 
 class CentroTreinamentoAtleta(BaseSchema):
-    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT  Lyon King', max_length=20)]
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT  Master Dragon', max_length=21)]
 
 
 class CentroTreinamentoOut(CentroTreinamentoIn):

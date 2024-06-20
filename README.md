@@ -739,6 +739,9 @@ from fastapi import FastAPI
 app = FastAPI(title='WorkoutApi')
 #app.include_router(api_router)
 
+
+## comando para gerar o projeto pela primeira vez
+
 if __name__ == "main":
     import uvicorn
 

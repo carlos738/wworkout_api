@@ -423,4 +423,329 @@ class AtletaUpdate(BaseSchema):
     nome: Annotated[Optional[str], Field(None, description='Nome do atleta', example='Joao', max_length=50)]
     idade: Annotated[Optional[int], Field(None, description='Idade do atleta', example=25)]
 
+#######
+#PASTA GATEGORIAS
+#controller
+from uuid import uuid4
+from fastapi import APIRouter, Body, HTTPException, status
+from pydantic import UUID4
+from workout_api.categorias.schemas import CategoriaIn, CategoriaOut
+from workout_api.categorias.models import CategoriaModel
 
+from workout_api.contrib.dependencies import DatabaseDependency
+from sqlalchemy.future import select
+
+router = APIRouter()
+
+@router.post(
+    '/', 
+    summary='Criar uma nova Categoria',
+    status_code=status.HTTP_201_CREATED,
+    response_model=CategoriaOut,
+)
+async def post(
+    db_session: DatabaseDependency, 
+    categoria_in: CategoriaIn = Body(...)
+) -> CategoriaOut:
+    categoria_out = CategoriaOut(id=uuid4(), **categoria_in.model_dump())
+    categoria_model = CategoriaModel(**categoria_out.model_dump())
+    
+    db_session.add(categoria_model)
+    await db_session.commit()
+
+    return categoria_out
+    
+    
+@router.get(
+    '/', 
+    summary='Consultar todas as Categorias',
+    status_code=status.HTTP_200_OK,
+    response_model=list[CategoriaOut],
+)
+async def query(db_session: DatabaseDependency) -> list[CategoriaOut]:
+    categorias: list[CategoriaOut] = (await db_session.execute(select(CategoriaModel))).scalars().all()
+    
+    return categorias
+
+
+@router.get(
+    '/{id}', 
+    summary='Consulta uma Categoria pelo id',
+    status_code=status.HTTP_200_OK,
+    response_model=CategoriaOut,
+)
+async def get(id: UUID4, db_session: DatabaseDependency) -> CategoriaOut:
+    categoria: CategoriaOut = (
+        await db_session.execute(select(CategoriaModel).filter_by(id=id))
+    ).scalars().first()
+
+    if not categoria:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f'Categoria não encontrada no id: {id}'
+        )
+    
+    return categoria
+
+
+## models
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from workout_api.contrib.models import BaseModel
+
+
+class CategoriaModel(BaseModel):
+    __tablename__ = 'categorias'
+
+    pk_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    nome: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    atleta: Mapped['AtletaModel'] = relationship(back_populates="categoria")
+
+
+
+## schemas
+from typing import Annotated
+
+from pydantic import UUID4, Field
+from workout_api.contrib.schemas import BaseSchema
+
+
+class CategoriaIn(BaseSchema):
+    nome: Annotated[str, Field(description='Nome da categoria', examples='Scale', max_length=10)]
+
+
+class CategoriaOut(CategoriaIn):
+    id: Annotated[UUID4, Field(description='Identificador da categoria')]
+
+
+
+
+    ## Centro_treinamento
+
+##controller
+from uuid import uuid4
+from fastapi import APIRouter, Body, HTTPException, status
+from pydantic import UUID4
+from workout_api.centro_treinamento.schemas import CentroTreinamentoIn, CentroTreinamentoOut
+from workout_api.centro_treinamento.models import CentroTreinamentoModel
+
+from workout_api.contrib.dependencies import DatabaseDependency
+from sqlalchemy.future import select
+
+router = APIRouter()
+
+@router.post(
+    '/', 
+    summary='Criar um novo Centro de treinamento',
+    status_code=status.HTTP_201_CREATED,
+    response_model=CentroTreinamentoOut,
+)
+async def post(
+    db_session: DatabaseDependency, 
+    centro_treinamento_in: CentroTreinamentoIn = Body(...)
+) -> CentroTreinamentoOut:
+    centro_treinamento_out = CentroTreinamentoOut(id=uuid4(), **centro_treinamento_in.model_dump())
+    centro_treinamento_model = CentroTreinamentoModel(**centro_treinamento_out.model_dump())
+    
+    db_session.add(centro_treinamento_model)
+    await db_session.commit()
+
+    return centro_treinamento_out
+    
+    
+@router.get(
+    '/', 
+    summary='Consultar todos os centros de treinamento',
+    status_code=status.HTTP_200_OK,
+    response_model=list[CentroTreinamentoOut],
+)
+async def query(db_session: DatabaseDependency) -> list[CentroTreinamentoOut]:
+    centros_treinamento_out: list[CentroTreinamentoOut] = (
+        await db_session.execute(select(CentroTreinamentoModel))
+    ).scalars().all()
+    
+    return centros_treinamento_out
+
+
+@router.get(
+    '/{id}', 
+    summary='Consulta um centro de treinamento pelo id',
+    status_code=status.HTTP_200_OK,
+    response_model=CentroTreinamentoOut,
+)
+async def get(id: UUID4, db_session: DatabaseDependency) -> CentroTreinamentoOut:
+    centro_treinamento_out: CentroTreinamentoOut = (
+        await db_session.execute(select(CentroTreinamentoModel).filter_by(id=id))
+    ).scalars().first()
+
+    if not centro_treinamento_out:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f'Centro de treinamento não encontrado no id: {id}'
+        )
+    
+    return centro_treinamento_out
+
+    #models
+    from typing import Annotated
+
+from pydantic import Field, UUID4
+from workout_api.contrib.schemas import BaseSchema
+
+
+class CentroTreinamentoIn(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua X, Q02', max_length=60)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Marcos', max_length=30)]
+
+
+class CentroTreinamentoAtleta(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
+
+
+class CentroTreinamentoOut(CentroTreinamentoIn):
+    id: Annotated[UUID4, Field(description='Identificador do centro de treinamento')]    
+    
+    #schemas
+    from typing import Annotated
+
+from pydantic import Field, UUID4
+from workout_api.contrib.schemas import BaseSchema
+
+
+class CentroTreinamentoIn(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua X, Q02', max_length=60)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Marcos', max_length=30)]
+
+
+class CentroTreinamentoAtleta(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT King', max_length=20)]
+
+
+class CentroTreinamentoOut(CentroTreinamentoIn):
+    id: Annotated[UUID4, Field(description='Identificador do centro de treinamento')]    
+
+
+## Configs
+# database
+
+from typing import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from workout_api.configs.settings import settings
+
+
+engine = create_async_engine(settings.DB_URL, echo=False)
+async_session = sessionmaker(
+    engine, class_=AsyncSession, expire_on_commit=False
+)
+
+async def get_session() -> AsyncGenerator:
+    async with async_session() as session:
+        yield session
+
+        
+# settings
+from pydantic import Field
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    DB_URL: str = Field(default='postgresql+asyncpg://workout:workout@localhost/workout')
+
+
+setings = Settings()
+
+##pasta contrib
+
+# dependencies
+from typing import Annotated
+from fastapi import Depends
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from workout_api.configs.database import get_session
+
+DatabaseDependency = Annotated[AsyncSession, Depends(get_session)]
+
+#models
+from uuid import uuid4
+from sqlalchemy import UUID
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+
+
+class BaseModel(DeclarativeBase):
+    id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), default=uuid4, nullable=False)
+
+# schemas
+from typing import Annotated
+
+from pydantic import Field, UUID4
+from workout_api.contrib.schemas import BaseSchema
+
+
+class CentroTreinamentoIn(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Lyon King', max_length=20)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua D, 33', max_length=60)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Carlos', max_length=30)]
+
+
+class CentroTreinamentoAtleta(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT  Lyon King', max_length=20)]
+
+
+class CentroTreinamentoOut(CentroTreinamentoIn):
+
+    id: Annotated[UUID4, Field(description='Identificador do centro de treinamento')]    
+
+
+
+    ## PASTA REPOSITROY FICA DENTRO DA PAS CONTRIB
+    # repository
+from typing import Annotated
+
+from pydantic import Field, UUID4
+from workout_api.contrib.schemas import BaseSchema
+
+
+class CentroTreinamentoIn(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT Lyon King', max_length=20)]
+    endereco: Annotated[str, Field(description='Endereço do centro de treinamento', examples='Rua D, 33', max_length=60)]
+    proprietario: Annotated[str, Field(description='Proprietario do centro de treinamento', examples='Carlos', max_length=30)]
+
+
+class CentroTreinamentoAtleta(BaseSchema):
+    nome: Annotated[str, Field(description='Nome do centro de treinamento', examples='CT  Lyon King', max_length=20)]
+
+
+class CentroTreinamentoOut(CentroTreinamentoIn):
+    id: Annotated[UUID4, Field(description='Identificador do centro de treinamento')]    
+
+
+    ## main
+    
+from fastapi import FastAPI
+from workout_api.routers import api_router
+
+app = FastAPI(title='WorkoutApi')
+app.include_router(api_router)
+
+
+from fastapi import FastAPI
+#from workout_api.routers import api_router
+
+app = FastAPI(title='WorkoutApi')
+#app.include_router(api_router)
+
+if __name__ == "main":
+    import uvicorn
+
+    uvicorn.run("main:app",host="0.0.0.0",port=8000,log_level="info",reload=True)
+
+
+
+
+
+    
